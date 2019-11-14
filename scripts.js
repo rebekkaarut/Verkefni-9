@@ -12,12 +12,12 @@ document.getElementsByTagName('button')[0].addEventListener('click', function(ev
   }
   let inntaksgildi = document.getElementsByTagName('input')[0].value;
   if(inntaksgildi.trim() == '') {
-    emptystring();
+    tomurStrengur();
   }
   else {
     let APIS_URL = 'https://apis.is/company?name=';
     APIS_URL += inntaksgildi;
-    loading();
+    vinna();
     fetch(APIS_URL)
         .then(result => {
           if (!result.ok) {
@@ -26,51 +26,23 @@ document.getElementsByTagName('button')[0].addEventListener('click', function(ev
           return result.json();
         })
         .then(data => {
-          if(data.results.length == 0) {notfound();}
+          if(data.results.length == 0) {fannstEkki();}
           for(let i = 0; i < data.results.length; i++){
             const{name, sn, active, address} = data.results[i];
-            makeElement(name,sn,active,address);
+            elementMaking(name,sn,active,address);
           }
 
         })
         .then(() => companies.removeChild(companies.firstChild))
         .catch(error => {
           companies.removeChild(companies.firstChild);
-          connectionfail();
+          tengingMistokst();
           console.error(error);
         })
   }
 }, false);
 
-
-function emptystring() {
-  var error = document.createElement("p");
-  error.innerHTML = "Fyrirtæki má ekki vera autt";
-  companies.appendChild(error);
-}
-function notfound() {
-  let text = document.createElement("p");
-  text.innerHTML = "Ekkert fyrirtæki fannst fyrir leitarstreng " + document.getElementsByTagName('input')[0].value;
-  companies.appendChild(text);
-}
-function connectionfail() {
-  let text = document.createElement("p");
-  text.innerHTML = "error við að sækja gögn";
-  companies.appendChild(text);
-}
-
-function loading() {
-  let gif = document.createElement("img");
-  let text = document.createElement("P");
-  text.innerHTML = "Loading...";
-  text.setAttribute("class", "loading")
-  gif.setAttribute("src", "loading.gif");
-  gif.setAttribute("class", "loading")
-  text.appendChild(gif);
-  companies.appendChild(text);
-}
-
-function makeElement(name,sn,active,address) {
+function elementMaking(name,sn,active,address) {
   var div = document.createElement("div");
   if (active == 1) {div.setAttribute("class", "company company--active");}
   else {div.setAttribute("class", "company company--inactive");}
@@ -98,3 +70,34 @@ function makeElement(name,sn,active,address) {
   div.appendChild(dl);
   companies.appendChild(div);
 }
+
+function vinna() {
+  let gif = document.createElement("img");
+  let text = document.createElement("P");
+  text.innerHTML = "vinna...";
+  text.setAttribute("class", "vinna")
+  gif.setAttribute("src", "vinna.gif");
+  gif.setAttribute("class", "vinna")
+  text.appendChild(gif);
+  companies.appendChild(text);
+}
+
+function tomurStrengur() {
+  var error = document.createElement("p");
+  error.innerHTML = "Fyrirtæki má ekki vera autt";
+  companies.appendChild(error);
+}
+
+function tengingMistokst() {
+  let text = document.createElement("p");
+  text.innerHTML = "error við að sækja gögn";
+  companies.appendChild(text);
+}
+
+function fannstEkki() {
+  let text = document.createElement("p");
+  text.innerHTML = "Ekkert fyrirtæki fannst fyrir leitarstreng " + document.getElementsByTagName('input')[0].value;
+  companies.appendChild(text);
+}
+
+
